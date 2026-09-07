@@ -52,6 +52,19 @@ repository — something only you and the repo owner have.
 `status` is one of `available`, `pending` (shown as *On hold*) or `sold`.
 Set `price` to `null` to display *Ask*.
 
+### Why the contact details look like gibberish
+
+`config.contact.email` and `config.contact.phone` are stored base64-encoded behind a
+`b64:` prefix, so Guy's address and number never sit in this public repo as plain text
+where search engines and address harvesters would find them. The page decodes them in
+the browser, and the editor handles it automatically — type a normal email, it stores
+the encoded form. This is obfuscation, not security: anyone determined can decode it.
+It exists to keep the details out of search results.
+
+To set one by hand: `b64:` + base64 of the value, e.g.
+`python3 -c "import base64;print('b64:'+base64.b64encode(b'a@b.com').decode())"`.
+A plain, unprefixed value still works if you prefer.
+
 ## Running it locally
 
 ```sh

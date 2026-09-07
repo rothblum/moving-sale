@@ -24,6 +24,17 @@
   let hideSold = false;
   let activeCategory = null;
 
+  // Contact details are stored base64-encoded so the plain strings never appear
+  // in the repo or in items.json, where search engines would pick them up.
+  function decodeContact(v) {
+    const s = String(v || '');
+    if (!s.startsWith('b64:')) return s;          // plain text still works
+    try {
+      return new TextDecoder().decode(
+        Uint8Array.from(atob(s.slice(4)), (c) => c.charCodeAt(0)));
+    } catch (_) { return ''; }
+  }
+
   function telHref(raw) {
     const d = String(raw || '').replace(/[^\d+]/g, '');
     if (d.startsWith('+')) return d;
@@ -196,9 +207,11 @@
     if (c.note) { $('siteNote').textContent = c.note; $('siteNote').hidden = false; }
 
     const ct = c.contact || {};
+    const email = decodeContact(ct.email);
+    const phone = decodeContact(ct.phone);
     const bits = [];
-    if (ct.email) bits.push(`<a href="mailto:${esc(ct.email)}">${esc(ct.email)}</a>`);
-    if (ct.phone) bits.push(`<a href="tel:${esc(telHref(ct.phone))}">${esc(ct.phone)}</a>`);
+    if (email) bits.push(`<a href="mailto:${esc(email)}">${esc(email)}</a>`);
+    if (phone) bits.push(`<a href="tel:${esc(telHref(phone))}">${esc(phone)}</a>`);
     const head = $('headContact');
     if (bits.length) {
       head.innerHTML = `<strong>Interested in something?</strong> Contact ${esc(ct.name || 'us')} `

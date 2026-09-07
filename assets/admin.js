@@ -99,6 +99,26 @@
     return btoa(s);
   }
 
+  // Contact details are kept base64-encoded in items.json so the plain strings
+  // never appear in the public repo. In memory here they are always plain text:
+  // decoded when loaded, encoded again on save.
+  function decodeContact(v) {
+    const s = String(v || '');
+    if (!s.startsWith('b64:')) return s;
+    try {
+      return new TextDecoder().decode(
+        Uint8Array.from(atob(s.slice(4)), (c) => c.charCodeAt(0)));
+    } catch (_) { return ''; }
+  }
+
+  function encodeContact(v) {
+    const s = String(v || '').trim();
+    if (!s) return '';
+    let bin = '';
+    new TextEncoder().encode(s).forEach((b) => { bin += String.fromCharCode(b); });
+    return 'b64:' + btoa(bin);
+  }
+
   const b64ToText = (b64) => new TextDecoder().decode(
     Uint8Array.from(atob(b64.replace(/\s/g, '')), (c) => c.charCodeAt(0)));
 
@@ -169,6 +189,9 @@
     data = JSON.parse(b64ToText(file.content));
     data.config = data.config || {};
     data.items = Array.isArray(data.items) ? data.items : [];
+    data.config.contact = data.config.contact || {};
+    data.config.contact.email = decodeContact(data.config.contact.email);
+    data.config.contact.phone = decodeContact(data.config.contact.phone);
     newBlobs.clear(); previews.forEach((u) => URL.revokeObjectURL(u)); previews.clear(); removedPaths.clear();
     fillConfig();
     renderItems();
@@ -405,8 +428,8 @@
         note: data.config.note || '',
         contact: {
           name: (data.config.contact || {}).name || '',
-          email: (data.config.contact || {}).email || '',
-          phone: (data.config.contact || {}).phone || '',
+          email: encodeContact((data.config.contact || {}).email),
+          phone: encodeContact((data.config.contact || {}).phone),
         },
       },
       items: data.items.map((it) => ({
