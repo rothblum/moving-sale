@@ -31,7 +31,7 @@
     const bodyText = `Hi ${c.name || ''},\n\nI'm interested in "${item.title}" (${money(item.price)}).\n\nIs it still available?`;
     const out = [];
     if (c.email) {
-      out.push(`<a class="btn primary" href="mailto:${encodeURIComponent(c.email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}">Email about this</a>`);
+      out.push(`<a class="btn primary" href="mailto:${encodeURI(c.email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}">Email about this</a>`);
     }
     if (c.phone) {
       const tel = String(c.phone).replace(/[^\d+]/g, '');
