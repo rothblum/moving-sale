@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Moving Sale</title>
+<meta name="description" content="Furniture and household items for sale — moving out of New York.">
+<meta property="og:title" content="Moving Sale">
+<meta property="og:description" content="Furniture and household items for sale — moving out of New York.">
+<meta property="og:type" content="website">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🛋️</text></svg>">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site-head">
+  <div class="wrap">
+    <p class="eyebrow">Moving sale · New York</p>
+    <h1 class="title" id="siteTitle">Moving Sale</h1>
+    <p class="subtitle" id="siteSubtitle"></p>
+    <p class="note" id="siteNote" hidden></p>
+  </div>
+</header>
+
+<nav class="toolbar">
+  <div class="wrap">
+    <span class="count" id="count">Loading…</span>
+    <div id="categoryFilters" style="display:flex;gap:8px;flex-wrap:wrap"></div>
+    <button class="chip" id="toggleSold" aria-pressed="false">Hide sold</button>
+  </div>
+</nav>
+
+<main class="wrap">
+  <div class="grid" id="grid">
+    <div class="empty">Loading items…</div>
+  </div>
+</main>
+
+<footer class="site-foot">
+  <div class="wrap">
+    <p id="footContact" style="margin:0 0 8px"></p>
+    <p style="margin:0">Prices are negotiable for bundles. Items are sold as-is, pickup only.</p>
+  </div>
+</footer>
+
+<div class="lb" id="lightbox" role="dialog" aria-modal="true" aria-label="Item photos" hidden>
+  <div class="lb-head">
+    <h2 class="lb-title" id="lbTitle"></h2>
+    <span class="lb-price" id="lbPrice"></span>
+    <button class="lb-close" id="lbClose" aria-label="Close">×</button>
+  </div>
+  <div class="lb-stage">
+    <button class="lb-nav prev" id="lbPrev" aria-label="Previous photo">‹</button>
+    <img id="lbImg" alt="">
+    <button class="lb-nav next" id="lbNext" aria-label="Next photo">›</button>
+  </div>
+  <div class="lb-foot" id="lbDots"></div>
+</div>
+
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,47 @@
+{
+  "config": {
+    "title": "Guy's Moving Sale",
+    "subtitle": "Everything must go before the move — New York, NY",
+    "note": "Pickup only. First come, first served. Cash, Venmo or Zelle.",
+    "contact": {
+      "name": "Guy",
+      "email": "",
+      "phone": ""
+    }
+  },
+  "items": [
+    {
+      "id": "sample-sofa",
+      "title": "Grey 3-seat sofa",
+      "price": 250,
+      "status": "available",
+      "category": "Living room",
+      "condition": "Very good",
+      "dimensions": "83\" W × 39\" D × 32\" H",
+      "description": "Comfortable three-seater with removable, washable covers. Light wear on one armrest, otherwise in great shape.",
+      "photos": []
+    },
+    {
+      "id": "sample-table",
+      "title": "Dining table + 4 chairs",
+      "price": 400,
+      "status": "sold",
+      "category": "Dining",
+      "condition": "Good",
+      "dimensions": "59\" × 33\"",
+      "description": "Solid oak table with four matching chairs. A few surface scratches on the tabletop.",
+      "photos": []
+    },
+    {
+      "id": "sample-lamp",
+      "title": "Floor lamp",
+      "price": 40,
+      "status": "pending",
+      "category": "Lighting",
+      "condition": "Like new",
+      "dimensions": "62\" tall",
+      "description": "Adjustable arc floor lamp, warm dimmable bulb included.",
+      "photos": []
+    }
+  ]
+}
