@@ -22,7 +22,6 @@
 
   let DATA = { config: {}, items: [] };
   let hideSold = false;
-  let activeCategory = null;
 
   // Contact details are stored base64-encoded so the plain strings never appear
   // in the repo or in items.json, where search engines would pick them up.
@@ -61,11 +60,7 @@
       ? `<img src="${esc(first)}" alt="${esc(item.title)}" loading="lazy" decoding="async">`
       : PLACEHOLDER;
 
-    const meta = [
-      item.category  ? `<span class="pill">${esc(item.category)}</span>` : '',
-      item.condition ? `<span class="pill">${esc(item.condition)}</span>` : '',
-      item.dimensions? `<span class="pill">${esc(item.dimensions)}</span>` : '',
-    ].join('');
+    const meta = item.dimensions ? `<span class="pill">${esc(item.dimensions)}</span>` : '';
 
     return `
       <article class="card ${st === 'sold' ? 'is-sold' : ''}" data-index="${index}">
@@ -89,8 +84,7 @@
   function visibleItems() {
     return DATA.items
       .map((it, i) => ({ it, i }))
-      .filter(({ it }) => !(hideSold && statusOf(it) === 'sold'))
-      .filter(({ it }) => !activeCategory || (it.category || 'Other') === activeCategory);
+      .filter(({ it }) => !(hideSold && statusOf(it) === 'sold'));
   }
 
   function render() {
@@ -109,20 +103,6 @@
 
     grid.querySelectorAll('[data-open]').forEach((b) =>
       b.addEventListener('click', () => openLightbox(Number(b.dataset.open))));
-  }
-
-  function renderFilters() {
-    const cats = [...new Set(DATA.items.map((i) => i.category).filter(Boolean))].sort();
-    const host = $('categoryFilters');
-    if (cats.length < 2) { host.innerHTML = ''; return; }
-    host.innerHTML = cats.map((c) =>
-      `<button class="chip" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
-    host.querySelectorAll('[data-cat]').forEach((b) => b.addEventListener('click', () => {
-      activeCategory = activeCategory === b.dataset.cat ? null : b.dataset.cat;
-      host.querySelectorAll('[data-cat]').forEach((x) =>
-        x.classList.toggle('on', x.dataset.cat === activeCategory));
-      render();
-    }));
   }
 
   /* ---------- lightbox ---------- */
@@ -226,7 +206,6 @@
       render();
     });
 
-    renderFilters();
     wireLightbox();
     render();
   }

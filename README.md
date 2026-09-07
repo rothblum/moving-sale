@@ -41,8 +41,6 @@ repository — something only you and the repo owner have.
   "title": "Grey 3-seat sofa",
   "price": 250,
   "status": "available",
-  "category": "Living room",
-  "condition": "Very good",
   "dimensions": "83\" W × 39\" D × 32\" H",
   "description": "Comfortable three-seater…",
   "photos": ["images/sofa-a1b2c.jpg"]

@@ -260,14 +260,8 @@
         </div>
 
         <div class="collapse-body" ${open ? '' : 'hidden'}>
-          <div class="three-col">
-            <label class="field"><span>Category</span>
-              <input type="text" data-f="category" data-i="${i}" value="${esc(item.category || '')}" placeholder="Living room" list="catList"></label>
-            <label class="field"><span>Condition</span>
-              <input type="text" data-f="condition" data-i="${i}" value="${esc(item.condition || '')}" placeholder="Very good"></label>
-            <label class="field"><span>Dimensions</span>
-              <input type="text" data-f="dimensions" data-i="${i}" value="${esc(item.dimensions || '')}" placeholder='30" W × 20" D'></label>
-          </div>
+          <label class="field"><span>Dimensions</span>
+            <input type="text" data-f="dimensions" data-i="${i}" value="${esc(item.dimensions || '')}" placeholder='83" W × 39" D × 32" H'></label>
           <label class="field"><span>Description</span>
             <textarea data-f="description" data-i="${i}" rows="2" placeholder="Anything a buyer should know — wear, brand, why you love it.">${esc(item.description || '')}</textarea></label>
           <span style="display:block;font-size:13px;font-weight:600;color:var(--ink-2);margin-bottom:6px">Photos</span>
@@ -290,11 +284,9 @@
   }
 
   function renderItems() {
-    const cats = [...new Set(data.items.map((i) => i.category).filter(Boolean))];
-    $('itemList').innerHTML =
-      (data.items.length ? data.items.map(itemRowHTML).join('')
-                         : `<div class="panel" style="text-align:center;color:var(--ink-3)">No items yet — add the first one below.</div>`)
-      + `<datalist id="catList">${cats.map((c) => `<option value="${esc(c)}">`).join('')}</datalist>`;
+    $('itemList').innerHTML = data.items.length
+      ? data.items.map(itemRowHTML).join('')
+      : `<div class="panel" style="text-align:center;color:var(--ink-3)">No items yet — add the first one below.</div>`;
 
     const sold = data.items.filter((i) => (i.status || '') === 'sold').length;
     $('itemCount').textContent = data.items.length
@@ -437,8 +429,6 @@
         title: it.title || '',
         price: it.price === '' || it.price === undefined ? null : it.price,
         status: it.status || 'available',
-        category: it.category || '',
-        condition: it.condition || '',
         dimensions: it.dimensions || '',
         description: it.description || '',
         photos: (it.photos || []).filter(Boolean),
@@ -525,7 +515,7 @@
     const id = `item-${Date.now().toString(36)}-${rand()}`;
     data.items.unshift({
       id, title: '', price: null, status: 'available',
-      category: '', condition: '', dimensions: '', description: '', photos: [],
+      dimensions: '', description: '', photos: [],
     });
     openItems.add(id);
     renderItems();
