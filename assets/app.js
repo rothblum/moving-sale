@@ -25,6 +25,14 @@
   let activeCategory = null;
 
   /* ---------- contact links ---------- */
+  function telHref(raw) {
+    const d = String(raw || '').replace(/[^\d+]/g, '');
+    if (d.startsWith('+')) return d;
+    if (d.length === 10) return '+1' + d;          // US number typed without country code
+    if (d.length === 11 && d.startsWith('1')) return '+' + d;
+    return d;
+  }
+
   function contactLinks(item) {
     const c = DATA.config.contact || {};
     const subject = `Moving sale: ${item.title}`;
@@ -34,7 +42,7 @@
       out.push(`<a class="btn primary" href="mailto:${encodeURI(c.email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}">Email about this</a>`);
     }
     if (c.phone) {
-      const tel = String(c.phone).replace(/[^\d+]/g, '');
+      const tel = telHref(c.phone);
       const smsBody = `Hi ${c.name || ''}, I'm interested in "${item.title}" (${money(item.price)}) from your moving sale. Is it still available?`;
       // "&" works on Android, "?" body separator on iOS 8+; "?&" is the widely compatible form.
       out.push(`<a class="btn" href="sms:${tel}?&body=${encodeURIComponent(smsBody)}">Text</a>`);
@@ -212,7 +220,7 @@
     const ct = c.contact || {};
     const bits = [];
     if (ct.email) bits.push(`<a href="mailto:${esc(ct.email)}">${esc(ct.email)}</a>`);
-    if (ct.phone) bits.push(`<a href="tel:${esc(String(ct.phone).replace(/[^\d+]/g, ''))}">${esc(ct.phone)}</a>`);
+    if (ct.phone) bits.push(`<a href="tel:${esc(telHref(ct.phone))}">${esc(ct.phone)}</a>`);
     $('footContact').innerHTML = bits.length
       ? `Questions? Reach ${esc(ct.name || 'us')} at ${bits.join(' or ')}.` : '';
 
