@@ -5,6 +5,10 @@
   const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) =>
     ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
+  const setText = (id, v) => { const el = $(id); if (el) el.textContent = v; };
+  const setHTML = (id, v) => { const el = $(id); if (el) el.innerHTML = v; };
+  const show    = (id)    => { const el = $(id); if (el) el.hidden = false; };
+
   const money = (n) => {
     if (n === '' || n === null || n === undefined) return 'Ask';
     const v = Number(n);
@@ -97,9 +101,9 @@
 
     const total = DATA.items.length;
     const sold = DATA.items.filter((it) => statusOf(it) === 'sold').length;
-    $('count').textContent = total
+    setText('count', total
       ? `${shown.length} of ${total} item${total === 1 ? '' : 's'}${sold ? ` · ${sold} sold` : ''}`
-      : 'No items listed yet';
+      : 'No items listed yet');
 
     grid.querySelectorAll('[data-open]').forEach((b) =>
       b.addEventListener('click', () => openLightbox(Number(b.dataset.open))));
@@ -145,6 +149,7 @@
   }
 
   function wireLightbox() {
+    if (!$('lightbox') || !document.querySelector('.lb-stage')) return;
     $('lbClose').addEventListener('click', closeLightbox);
     $('lbPrev').addEventListener('click', () => showPhoto(lbIdx - 1));
     $('lbNext').addEventListener('click', () => showPhoto(lbIdx + 1));
@@ -181,32 +186,41 @@
       return;
     }
 
-    const c = DATA.config || {};
-    if (c.title) { document.title = c.title; $('siteTitle').textContent = c.title; }
-    $('siteSubtitle').textContent = c.subtitle || '';
-    if (c.note) { $('siteNote').textContent = c.note; $('siteNote').hidden = false; }
+    // Everything below the grid is optional chrome. If a cached copy of this
+    // script ever meets a newer page that no longer has one of these elements,
+    // it must not stop the items themselves from rendering.
+    try {
+      const c = DATA.config || {};
+      if (c.title) { document.title = c.title; setText('siteTitle', c.title); }
+      setText('siteSubtitle', c.subtitle || '');
+      if (c.note) { setText('siteNote', c.note); show('siteNote'); }
 
-    const ct = c.contact || {};
-    const email = decodeContact(ct.email);
-    const phone = decodeContact(ct.phone);
-    const bits = [];
-    if (email) bits.push(`<a href="mailto:${esc(email)}">${esc(email)}</a>`);
-    if (phone) bits.push(`<a href="tel:${esc(telHref(phone))}">${esc(phone)}</a>`);
-    const head = $('headContact');
-    if (bits.length) {
-      head.innerHTML = `<strong>Interested in something?</strong> Contact ${esc(ct.name || 'us')} `
-        + `at ${bits.join(' or ')} and mention the item.`;
-      head.hidden = false;
+      const ct = c.contact || {};
+      const email = decodeContact(ct.email);
+      const phone = decodeContact(ct.phone);
+      const bits = [];
+      if (email) bits.push(`<a href="mailto:${esc(email)}">${esc(email)}</a>`);
+      if (phone) bits.push(`<a href="tel:${esc(telHref(phone))}">${esc(phone)}</a>`);
+      if (bits.length) {
+        setHTML('headContact',
+          `<strong>Interested in something?</strong> Contact ${esc(ct.name || 'us')} `
+          + `at ${bits.join(' or ')} and mention the item.`);
+        show('headContact');
+      }
+
+      const toggle = $('toggleSold');
+      if (toggle) toggle.addEventListener('click', (e) => {
+        hideSold = !hideSold;
+        e.currentTarget.setAttribute('aria-pressed', String(hideSold));
+        e.currentTarget.textContent = hideSold ? 'Show sold' : 'Hide sold';
+        render();
+      });
+
+      wireLightbox();
+    } catch (err) {
+      console.error('Page chrome failed to initialise; showing the items anyway.', err);
     }
 
-    $('toggleSold').addEventListener('click', (e) => {
-      hideSold = !hideSold;
-      e.currentTarget.setAttribute('aria-pressed', String(hideSold));
-      e.currentTarget.textContent = hideSold ? 'Show sold' : 'Hide sold';
-      render();
-    });
-
-    wireLightbox();
     render();
   }
 
