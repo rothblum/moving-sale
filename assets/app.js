@@ -24,31 +24,12 @@
   let hideSold = false;
   let activeCategory = null;
 
-  /* ---------- contact links ---------- */
   function telHref(raw) {
     const d = String(raw || '').replace(/[^\d+]/g, '');
     if (d.startsWith('+')) return d;
     if (d.length === 10) return '+1' + d;          // US number typed without country code
     if (d.length === 11 && d.startsWith('1')) return '+' + d;
     return d;
-  }
-
-  function contactLinks(item) {
-    const c = DATA.config.contact || {};
-    const subject = `Moving sale: ${item.title}`;
-    const bodyText = `Hi ${c.name || ''},\n\nI'm interested in "${item.title}" (${money(item.price)}).\n\nIs it still available?`;
-    const out = [];
-    if (c.email) {
-      out.push(`<a class="btn primary" href="mailto:${encodeURI(c.email)}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyText)}">Email about this</a>`);
-    }
-    if (c.phone) {
-      const tel = telHref(c.phone);
-      const smsBody = `Hi ${c.name || ''}, I'm interested in "${item.title}" (${money(item.price)}) from your moving sale. Is it still available?`;
-      // "&" works on Android, "?" body separator on iOS 8+; "?&" is the widely compatible form.
-      out.push(`<a class="btn" href="sms:${tel}?&body=${encodeURIComponent(smsBody)}">Text</a>`);
-    }
-    if (!out.length) out.push(`<span class="btn" style="opacity:.5">Contact info coming soon</span>`);
-    return out.join('');
   }
 
   /* ---------- render ---------- */
@@ -90,9 +71,6 @@
           </div>
           ${meta ? `<div class="meta">${meta}</div>` : ''}
           ${item.description ? `<p class="desc">${esc(item.description)}</p>` : ''}
-          <div class="actions">
-            ${st === 'sold' ? '<span class="btn" style="opacity:.5">Sold</span>' : contactLinks(item)}
-          </div>
         </div>
       </article>`;
   }
@@ -221,8 +199,12 @@
     const bits = [];
     if (ct.email) bits.push(`<a href="mailto:${esc(ct.email)}">${esc(ct.email)}</a>`);
     if (ct.phone) bits.push(`<a href="tel:${esc(telHref(ct.phone))}">${esc(ct.phone)}</a>`);
-    $('footContact').innerHTML = bits.length
-      ? `Questions? Reach ${esc(ct.name || 'us')} at ${bits.join(' or ')}.` : '';
+    const head = $('headContact');
+    if (bits.length) {
+      head.innerHTML = `<strong>Interested in something?</strong> Contact ${esc(ct.name || 'us')} `
+        + `at ${bits.join(' or ')} and mention the item.`;
+      head.hidden = false;
+    }
 
     $('toggleSold').addEventListener('click', (e) => {
       hideSold = !hideSold;

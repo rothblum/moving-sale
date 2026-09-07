@@ -230,3 +230,16 @@ h1.title {
   .grid { gap: 18px; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); }
   .site-head .wrap { padding-top: 28px; padding-bottom: 24px; }
 }
+
+/* contact details at the top of the page */
+.contact-line {
+  margin: 14px 0 0; padding: 13px 16px; max-width: 60ch;
+  background: color-mix(in srgb, var(--accent) 9%, var(--bg-raised));
+  border: 1px solid color-mix(in srgb, var(--accent) 30%, transparent);
+  border-radius: 10px; font-size: 15px; color: var(--ink);
+}
+.contact-line strong { font-weight: 600; }
+.contact-line a {
+  color: var(--accent); font-weight: 600;
+  text-decoration-thickness: 1px; text-underline-offset: 2px; white-space: nowrap;
+}
